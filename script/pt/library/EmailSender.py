@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-  
+
 import smtplib
 from email.header import Header
 from email.mime.text import MIMEText
