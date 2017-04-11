@@ -1,10 +1,10 @@
 import Secrets
 from SeedInfo import SeedInfo
-from lib.Email import Email
-from lib.EmailSender import EmailSender
-from lib.Login import Login
-from lib.SiteRequest import SiteRequest
-from lib.Utils import Utils
+from library.Email import Email
+from library.EmailSender import EmailSender
+from library.Login import Login
+from library.SiteRequest import SiteRequest
+from library.Utils import Utils
 import re
 
 
