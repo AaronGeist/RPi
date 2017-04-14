@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 class Utils:
     cookie = None
-    COOKIE_FILE = 'cookie.txt'
+    COOKIE_FILE = '/var/tmp/cookie.txt'
     DEFAULT_HEADER = [(
         "User-Agent",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36")]
