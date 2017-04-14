@@ -4,8 +4,9 @@ import smtplib
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
+
+from biz import Secrets
 from library.Email import Email
-import Secrets
 
 
 
