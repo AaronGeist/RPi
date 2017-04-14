@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-  
+
 import Secrets
 from library.Email import Email
 from library.EmailSender import EmailSender
@@ -52,7 +54,7 @@ class MagicPointChecker:
         assert len(divList) == 1
 
         content = divList[0].contents[0]
-        m = re.search("获取(\d+.\d+)个魔力", content)
+        m = re.search(u"获取(\d+.\d+)个魔力", content)
         assert m
         return float(m.group(1))
 

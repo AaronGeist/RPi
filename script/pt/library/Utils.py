@@ -14,7 +14,7 @@ class Utils:
         "User-Agent",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36")]
 
-    ssl._create_default_https_context = ssl._create_unverified_context
+    #ssl._create_default_https_context = ssl._create_unverified_context
 
     @staticmethod
     def saveCookie():
