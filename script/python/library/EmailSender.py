@@ -4,6 +4,9 @@ import smtplib
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
+from library.Email import Email
+import Secrets
+
 
 
 class EmailSender:
@@ -29,3 +32,15 @@ class EmailSender:
         server.login(email.fromAddr, email.password)
         server.sendmail(email.fromAddr, email.toAddr, msg.as_string())
         server.quit()
+
+    @staticmethod
+    def quickSend(title, content):
+        email = Email()
+        email.fromAddr = Secrets.emailFromAddr
+        email.toAddr = Secrets.emailToAddr
+        email.password = Secrets.emailPassword
+        email.stmpServer = Secrets.emailStmpServer
+        email.title = title
+        email.body = content
+
+        EmailSender.send(email)

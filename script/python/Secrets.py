@@ -1,4 +1,4 @@
-siteUserName = ""
+siteUserName = ''
 sitePassword = ''
 
 emailFromAddr = ''
