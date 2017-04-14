@@ -70,15 +70,7 @@ class MagicPointChecker:
         return ret
 
     def notify(self, point):
-        email = Email()
-        email.fromAddr = Secrets.emailFromAddr
-        email.toAddr = Secrets.emailToAddr
-        email.password = Secrets.emailPassword
-        email.stmpServer = Secrets.emailStmpServer
-        email.body = "魔力值为" + str(point)
-
-        EmailSender.send(email)
-
+        EmailSender.quickSend("魔力值警告: " + str(point), "")
 
 if __name__ == "__main__":
     checker = MagicPointChecker()

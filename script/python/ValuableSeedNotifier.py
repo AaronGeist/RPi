@@ -139,14 +139,8 @@ class ValuableSeedNotifier:
             msg += seed.litePrint()
 
         print(msg)
-        email = Email()
-        email.fromAddr = Secrets.emailFromAddr
-        email.toAddr = Secrets.emailToAddr
-        email.password = Secrets.emailPassword
-        email.stmpServer = Secrets.emailStmpServer
-        email.body = msg
 
-        EmailSender.send(email)
+        EmailSender.quickSend(u"种子", msg)
 
 
 if __name__ == "__main__":
