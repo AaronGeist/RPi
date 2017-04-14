@@ -123,14 +123,17 @@ class ValuableSeedNotifier:
     def filter(self, seedList):
         result = []
         for seed in seedList:
-            if seed.uploadNum != 0 and seed.downloadNum / seed.uploadNum > 3:
+            if seed.uploadNum != 0 and seed.downloadNum / seed.uploadNum >= 3:
                 result.append(seed)
-            elif seed.free and (seed.since.find("1时") != -1 or seed.since.find("0时") != -1):
+            elif seed.free and re.match("[0-2]时", "".join(seed.since)):
                 result.append(seed)
 
         return result
 
     def notify(self, seedList):
+        if len(seedList) == 0:
+            return
+
         msg = ""
         for seed in seedList:
             msg += seed.litePrint()
