@@ -72,9 +72,12 @@ class MagicPointChecker:
     def notify(self, point):
         EmailSender.quickSend("魔力值警告: " + str(point), "")
 
+    def check(self):
+        point = self.crawl()
+        if point <= MagicPointChecker.POINT_THRESHOLD:
+            self.notify(point)
+
+
 if __name__ == "__main__":
     checker = MagicPointChecker()
-    point = checker.crawl()
-
-    if point <= 40:
-        checker.notify(point)
+    checker.check()

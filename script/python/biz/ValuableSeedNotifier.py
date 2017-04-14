@@ -1,6 +1,5 @@
-import Secrets
-from SeedInfo import SeedInfo
-from library.Email import Email
+from biz import Secrets
+from biz.SeedInfo import SeedInfo
 from library.EmailSender import EmailSender
 from library.Login import Login
 from library.SiteRequest import SiteRequest
@@ -142,10 +141,11 @@ class ValuableSeedNotifier:
 
         EmailSender.quickSend(u"种子", msg)
 
+    def check(self):
+        seeds = seedNotifier.crawl()
+        filteredSeeds = seedNotifier.filter(seeds)
+        seedNotifier.notify(filteredSeeds)
 
 if __name__ == "__main__":
     seedNotifier = ValuableSeedNotifier()
-    seeds = seedNotifier.crawl()
-    ret = seedNotifier.filter(seeds)
-    for seed in ret:
-        print('\n'.join(['%s:%s' % item for item in seed.__dict__.items()]) + "\n")
+    seedNotifier.check()

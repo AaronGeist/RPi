@@ -14,7 +14,7 @@ class Utils:
         "User-Agent",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36")]
 
-    #ssl._create_default_https_context = ssl._create_unverified_context
+    # ssl._create_default_https_context = ssl._create_unverified_context
 
     @staticmethod
     def saveCookie():
@@ -147,14 +147,3 @@ class Utils:
     @staticmethod
     def rootPath():
         return os.path.abspath(os.path.dirname(__file__))
-
-
-if __name__ == '__main__':
-    # Utils.createFolder("test/aabb")
-    print(Utils.parseImageName(
-        "http://www.dpfile.com/s/c/app/main/index-header/i/sprite.122340b14b6d989d8548edb59bd3a93c.png"))
-
-    src = "http://3.im.guokr.com/XA_vKZBSgzF0ji3YluzlDi4PzupT_vV0xLyfsyQLVSKgAAAAoAAAAEpQ.jpg?imageView2/1/w/48/h/48"
-    print(Utils.parseImageName(src))
-
-    print(Utils.rootPath())

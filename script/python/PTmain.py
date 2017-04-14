@@ -1,14 +1,8 @@
-from MagicPointChecker import MagicPointChecker
-from ValuableSeedNotifier import ValuableSeedNotifier
+from biz.MagicPointChecker import MagicPointChecker
+from biz.ValuableSeedNotifier import ValuableSeedNotifier
 
 # notify valuable seeds
-seedNotifier = ValuableSeedNotifier()
-seeds = seedNotifier.crawl()
-filteredSeeds = seedNotifier.filter(seeds)
-seedNotifier.notify(filteredSeeds)
+ValuableSeedNotifier().check()
 
 # notify if magic point is not high enough
-checker = MagicPointChecker()
-point = checker.crawl()
-if point <= MagicPointChecker.POINT_THRESHOLD:
-    checker.notify(point)
+MagicPointChecker().check()
