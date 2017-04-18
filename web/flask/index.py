@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import t
 
 app = Flask(__name__)
 
@@ -13,6 +14,10 @@ def hellouser(username):
 @app.route('/monitor/', methods=['GET', 'POST'])
 def monitor():
     return render_template('monitor/index.html')
+
+@app.route('/monitor/cpu/temperature', methods=['GET', 'POST'])
+def monitor_cpu_temperature():
+    return t.test()
 
 if __name__ == '__main__':
        app.run(host='0.0.0.0', port=8888, debug=True)
