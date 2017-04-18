@@ -142,9 +142,9 @@ class ValuableSeedNotifier:
         EmailSender.quickSend(u"种子", msg)
 
     def check(self):
-        seeds = seedNotifier.crawl()
-        filteredSeeds = seedNotifier.filter(seeds)
-        seedNotifier.notify(filteredSeeds)
+        seeds = self.crawl()
+        filteredSeeds = self.filter(seeds)
+        self.notify(filteredSeeds)
 
 if __name__ == "__main__":
     seedNotifier = ValuableSeedNotifier()

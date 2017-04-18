@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-  
 
-import Secrets
-from library.Email import Email
+from biz import Secrets
 from library.EmailSender import EmailSender
 from library.Login import Login
 from library.SiteRequest import SiteRequest
