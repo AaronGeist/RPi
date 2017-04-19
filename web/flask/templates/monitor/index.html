@@ -1,105 +1,81 @@
 {% extends "layout.html" %}
 {% block head %}
-  {{ super() }}
-  <script type=text/javascript
-    src="{{ url_for('static', filename='highcharts.js') }}"></script>
-  <script language="Javascript">
+{{ super() }}
+<script type=text/javascript
+        src="{{ url_for('static', filename='highcharts.js') }}"></script>
+<script language="Javascript">
 
-
-    var cpuTempOptions = {
-                    chart: {
-                      renderTo: 'cpuTempContainer',
-                      type: 'line'
-                    },
-                    title:{
-                      text: 'CPU temperature'
-                    },  
-                    yAxis: {
-                      min: 40,
-                      title: {
-                        text: '℃'
-                      }
-                    },
-		    xAxis: {  
-                      categories: []  
-                    }, 
+    function genOptions(containerId, title, minValue, yTitle, xTitle) {
+        return {
+            chart: {
+                renderTo: containerId,
+                type: 'line'
+            },
+            title:{
+                text: title
+            },
+            yAxis: {
+                min: minValue,
+                title: {
+                    text: yTitle
+                }
+            },
+		    xAxis: {
+                categories: [],
+                title: {
+                    text: xTitle
+                }
+            },
 		    series: []
-                 };
+        };
+    }
 
-    var memoryOptions = {
-                    chart: {
-                      renderTo: 'memoryContainer',
-                      type: 'line'
-                    },
-                    title:{
-                      text: 'Memory usage'
-                    },  
-                    yAxis: {
-                      min: 40,
-                      title: {
-                        text: '℃'
-                      }
-                    },
-		    xAxis: {  
-                      categories: []  
-                    }, 
-		    series: []
-                 };
+    function createCharts(path, options) {
+        var chart;
+        $.getJSON(
+	        "/monitor/" + path,
+            function(data) {
+		        options.series.push({"data": data.data})
+		        options.xAxis.categories = data.title
+                chart = new Highcharts.Chart(options);
+	        }
+	    );
 
-    var cpuTempChart;
-    var memoryChart;
+        setInterval(function(){
+            $.ajax({
+                type: "POST",
+                url: "/monitor/" + path + "/1",
+                async: false,
+                success: function(data) {
+                    chart.xAxis[0].categories.push(data.title)
+                    chart.series[0].addPoint([data.title, data.data], true, true)
+                }
+            });
+            }, 5000);
 
-$(document).ready(function(){
-  $.getJSON(
-	"/monitor/cpu/temperature",
-        function(data){
-		cpuTempOptions.series.push({"data": data.data,"name":"Core 1"})
-		cpuTempOptions.xAxis.categories = data.title
-		cpuTempChart = new Highcharts.Chart(cpuTempOptions);
-	}
+        return chart;
+    }
 
-	);
-  setInterval(function(){
-		$.ajax({
-			type: "POST",
-			url: "/monitor/cpu/temperature/1",
-			async: false,
-			success: function(data){
-				cpuTempChart.xAxis[0].categories.push(data.title)
-				cpuTempChart.series[0].addPoint([data.title, data.data], true, true)
-			}
-		});
-  }, 5000);
+    $(document).ready(function() {
+        var cpuTempOp = genOptions("cpuTempContainer", "Cpu temperature", 40, "temperature(℃)", "time");
+        createCharts("cpu/temperature", cpuTempOp);
 
-  $.getJSON(
-	"/monitor/memory/usage",
-        function(data){
-		memoryOptions.series.push({"data": data.data,"name":"Core 1"})
-		memoryOptions.xAxis.categories = data.title
-		memoryChart = new Highcharts.Chart(memoryOptions);
-	}
-
-	);
-  setInterval(function(){
-		$.ajax({
-			type: "POST",
-			url: "/monitor/memory/usage/1",
-			async: false,
-			success: function(data){
-				memoryChart.xAxis[0].categories.push(data.title)
-				memoryChart.series[0].addPoint([data.title, data.data], true, true)
-			}
-		});
-  }, 5000);
+        var memoryOp = genOptions("memoryContainer", "Memory Usage", 0, "memory(MB)", "time");
+        createCharts("memory/usage", memoryOp);
 });
-  </script>
+
+
+
+
+</script>
 {% endblock %}
 {% block body_title %}
-  {{ super() }}
+{{ super() }}
 
 <div id="cpuTempContainer"></div>
 <div id="memoryContainer"></div>
-  
+
 {% endblock %}
 {% block body %}
 {% endblock %}
+
