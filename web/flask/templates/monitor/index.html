@@ -4,65 +4,101 @@
   <script type=text/javascript
     src="{{ url_for('static', filename='highcharts.js') }}"></script>
   <script language="Javascript">
-/*
-    $(document).ready(function() {
 
-Highcharts.chart('container', {
 
-    title: {
-        text: 'Solar Employment Growth by Sector, 2010-2016'
-    },
+    var cpuTempOptions = {
+                    chart: {
+                      renderTo: 'cpuTempContainer',
+                      type: 'line'
+                    },
+                    title:{
+                      text: 'CPU temperature'
+                    },  
+                    yAxis: {
+                      min: 40,
+                      title: {
+                        text: '℃'
+                      }
+                    },
+		    xAxis: {  
+                      categories: []  
+                    }, 
+		    series: []
+                 };
 
-    subtitle: {
-        text: 'Source: thesolarfoundation.com'
-    },
+    var memoryOptions = {
+                    chart: {
+                      renderTo: 'memoryContainer',
+                      type: 'line'
+                    },
+                    title:{
+                      text: 'Memory usage'
+                    },  
+                    yAxis: {
+                      min: 40,
+                      title: {
+                        text: '℃'
+                      }
+                    },
+		    xAxis: {  
+                      categories: []  
+                    }, 
+		    series: []
+                 };
 
-    yAxis: {
-        title: {
-            text: 'Number of Employees'
-        }
-    },
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle'
-    },
+    var cpuTempChart;
+    var memoryChart;
 
-    plotOptions: {
-        series: {
-            pointStart: 2010
-        },
-    line: {
-        dataLabels: {
-            enabled: true
-        }
-    }
-    },
-
-    series: [{
-        name: 'Installation',
-        data: [['1:00',43934], ['2:02',52503], ['5:34',57177], ['7:45',69658]]
-    }
-    ]
-
-});
-
-});
-*/
 $(document).ready(function(){
-  $("#btn").click(function(){
-  htmlobj=$.ajax({url:"/monitor/cpu/temperature",async:false});
-  $("#myDiv").html(htmlobj.responseText);
-  });
+  $.getJSON(
+	"/monitor/cpu/temperature",
+        function(data){
+		cpuTempOptions.series.push({"data": data.data,"name":"Core 1"})
+		cpuTempOptions.xAxis.categories = data.title
+		cpuTempChart = new Highcharts.Chart(cpuTempOptions);
+	}
+
+	);
+  setInterval(function(){
+		$.ajax({
+			type: "POST",
+			url: "/monitor/cpu/temperature/1",
+			async: false,
+			success: function(data){
+				cpuTempChart.xAxis[0].categories.push(data.title)
+				cpuTempChart.series[0].addPoint([data.title, data.data], true, true)
+			}
+		});
+  }, 5000);
+
+  $.getJSON(
+	"/monitor/memory/usage",
+        function(data){
+		memoryOptions.series.push({"data": data.data,"name":"Core 1"})
+		memoryOptions.xAxis.categories = data.title
+		memoryChart = new Highcharts.Chart(memoryOptions);
+	}
+
+	);
+  setInterval(function(){
+		$.ajax({
+			type: "POST",
+			url: "/monitor/memory/usage/1",
+			async: false,
+			success: function(data){
+				memoryChart.xAxis[0].categories.push(data.title)
+				memoryChart.series[0].addPoint([data.title, data.data], true, true)
+			}
+		});
+  }, 5000);
 });
   </script>
 {% endblock %}
 {% block body_title %}
   {{ super() }}
- <!-- <div id="container"></div> -->
-<input type="button" id="btn" value="query"/>
-<div id="myDiv">test</div>
 
+<div id="cpuTempContainer"></div>
+<div id="memoryContainer"></div>
   
 {% endblock %}
 {% block body %}

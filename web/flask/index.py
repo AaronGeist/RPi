@@ -1,5 +1,5 @@
-from flask import Flask, render_template
-import t
+from flask import Flask, render_template, jsonify
+from Monitor import CpuTemperature, Memory
 
 app = Flask(__name__)
 
@@ -17,7 +17,19 @@ def monitor():
 
 @app.route('/monitor/cpu/temperature', methods=['GET', 'POST'])
 def monitor_cpu_temperature():
-    return t.test()
+    return jsonify(CpuTemperature().history())
+
+@app.route('/monitor/cpu/temperature/1', methods=['GET', 'POST'])
+def monitor_cpu_temperature_single():
+    return jsonify(CpuTemperature().latest())
+
+@app.route('/monitor/memory/usage', methods=['GET', 'POST'])
+def monitor_memory_usage():
+    return jsonify(Memory().history())
+
+@app.route('/monitor/memory/usage/1', methods=['GET', 'POST'])
+def monitor_memory_usage_single():
+    return jsonify(Memory().latest())
 
 if __name__ == '__main__':
        app.run(host='0.0.0.0', port=8888, debug=True)
