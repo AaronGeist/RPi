@@ -1,5 +1,6 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, Response
 from Monitor import CpuTemperature, Memory
+from Camera import Camera
 
 app = Flask(__name__)
 
@@ -30,6 +31,17 @@ def monitor_memory_usage():
 @app.route('/monitor/memory/usage/1', methods=['GET', 'POST'])
 def monitor_memory_usage_single():
     return jsonify(Memory().latest())
+
+def gen(camera):
+    while True:
+        frame = camera.snapshot()
+	yield (b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+@app.route('/camera', methods=['GET', 'POST'])
+def camera():
+    return Response(gen(Camera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
        app.run(host='0.0.0.0', port=8888, debug=True)
