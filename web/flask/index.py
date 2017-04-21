@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, Response
-from Monitor import CpuTemperature, Memory
-from Camera import Camera
+from features.Monitor import CpuTemperature, Memory
+from features.Camera import Camera
 
 app = Flask(__name__)
 
