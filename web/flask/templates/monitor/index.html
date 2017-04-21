@@ -5,16 +5,17 @@
         src="{{ url_for('static', filename='highcharts.js') }}"></script>
 <script language="Javascript">
 
-    function genOptions(containerId, title, minValue, yTitle, xTitle) {
+    function genOptions(containerId, title, minValue, maxValue, yTitle, xTitle) {
         return {
             chart: {
                 renderTo: containerId,
-                type: 'line'
+                type: 'area'
             },
             title:{
                 text: title
             },
             yAxis: {
+		max: maxValue,
                 min: minValue,
                 title: {
                     text: yTitle
@@ -57,10 +58,10 @@
     }
 
     $(document).ready(function() {
-        var cpuTempOp = genOptions("cpuTempContainer", "Cpu temperature", 40, "temperature(℃)", "time");
+        var cpuTempOp = genOptions("cpuTempContainer", "Cpu temperature", 0, 100, "temperature(℃)", "time");
         createCharts("cpu/temperature", cpuTempOp);
 
-        var memoryOp = genOptions("memoryContainer", "Memory Usage", 0, "memory(MB)", "time");
+        var memoryOp = genOptions("memoryContainer", "Memory Usage", 0, 800, "memory(MB)", "time");
         createCharts("memory/usage", memoryOp);
 });
 
@@ -71,11 +72,9 @@
 {% endblock %}
 {% block body_title %}
 {{ super() }}
-
-<div id="cpuTempContainer"></div>
-<div id="memoryContainer"></div>
-
 {% endblock %}
 {% block body %}
+<div id="cpuTempContainer"></div>
+<div id="memoryContainer"></div>
 {% endblock %}
 

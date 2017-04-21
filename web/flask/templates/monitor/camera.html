@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block head %}
+{{ super() }}
+
+<script language="Javascript">
+
+    $(document).ready(function() {
+	$("#left").click(function() {
+		$.ajax({
+                	type: "POST",
+	                url: "/monitor/camera/left/",
+                	async: true 
+                })
+            });
+	$("#right").click(function() {
+		$.ajax({
+                type: "POST",
+                url: "/monitor/camera/right/",
+                async: true 
+                })
+	});
+    });
+
+</script>
+{% endblock %}
+{% block body_title %}
+{{ super() }}
+{% endblock %}
+{% block body %}
+    <h1>Video Streaming Demonstration</h1>
+    <img src="{{ url_for('camera') }}">
+    <input type="button" value="<-" id="left"/> <input type="button" value="->" id="right"/>
+{% endblock %}

@@ -60,7 +60,7 @@ class Camera:
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 faces = face_cascade.detectMultiScale(gray)
 
-                print("Found " + str(len(faces)) + " face(s)")
+                print("Found " + str(len(faces)) + " face(s) " + str(threading.currentThread().ident))
 
                 # Draw a rectangle around every face and move the motor towards the face
                 for (x, y, w, h) in faces:
@@ -68,7 +68,7 @@ class Camera:
                     # cv2.putText(image, "Face No." + str(len(faces)), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
                 # cv2.imshow( "Frame", image )
-                cv2.waitKey(1)
+                #cv2.waitKey(1)
 
                 # Clear the stream in preparation for the next frame
                 rawCapture.truncate(0)

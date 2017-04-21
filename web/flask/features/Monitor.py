@@ -15,7 +15,7 @@ class Database:
             self.instance = redis.StrictRedis(connection_pool=pool)
 
     def append(self, bucketName, value):
-        if self.instance.llen(bucketName) == self.MAX_SIZE * 2:
+        if self.instance.llen(bucketName) >= self.MAX_SIZE * 2:
             self.instance.ltrim(bucketName, 0, self.MAX_SIZE - 1)
         self.instance.lpush(bucketName, value)
 
@@ -27,13 +27,13 @@ class Database:
 
 
 class Config:
-    PATH = "config.json"
+    path = os.path.join(os.path.dirname(__file__), "../config.json")
 
     innerConfig = None
 
     @staticmethod
     def init():
-        with open(Config.PATH, 'r') as f:
+        with open(Config.path, 'r') as f:
             Config.innerConfig = json.load(f)
 
     @staticmethod
