@@ -19,6 +19,12 @@ class Database:
             self.instance.ltrim(bucketName, 0, self.MAX_SIZE - 1)
         self.instance.lpush(bucketName, value)
 
+    def set(self, key, value):
+        self.instance.set(key, value)
+
+    def get(self, key):
+        return self.instance.get(key)
+
     def getByRange(self, bucketName, start=0, end=-1):
         return self.instance.lrange(bucketName, start, end)
 

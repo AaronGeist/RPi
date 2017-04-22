@@ -3,6 +3,7 @@ import threading
 import time
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+from Monitor import Database
 import os
 import cv2
 
@@ -25,6 +26,19 @@ class Camera:
             # wait until frames start to be available
             while self.frame is None:
                 time.sleep(0)
+
+
+    @staticmethod
+    def enable_face_detect():
+        Database().set("face_detect", "1")
+
+    @staticmethod
+    def disable_face_detect():
+        Database().set("face_detect", "0")
+
+    @staticmethod
+    def is_enable_face_detect():
+        return Database().get("face_detect") == "1"
 
     def snapshot(self):
         Camera.last_access = time.time()
@@ -56,19 +70,20 @@ class Camera:
 
                 image = data.array
 
-                # Use the cascade file we loaded to detect faces
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                faces = face_cascade.detectMultiScale(gray)
+                if Camera.is_enable_face_detect():
+                    # Use the cascade file we loaded to detect faces
+                    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    faces = face_cascade.detectMultiScale(gray)
 
-                print("Found " + str(len(faces)) + " face(s) " + str(threading.currentThread().ident))
+                    print("Found " + str(len(faces)) + " face(s) " + str(threading.currentThread().ident))
 
-                # Draw a rectangle around every face and move the motor towards the face
-                for (x, y, w, h) in faces:
-                    cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 255), 1)
-                    # cv2.putText(image, "Face No." + str(len(faces)), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    # Draw a rectangle around every face and move the motor towards the face
+                    for (x, y, w, h) in faces:
+                        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 255), 1)
+                        # cv2.putText(image, "Face No." + str(len(faces)), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-                # cv2.imshow( "Frame", image )
-                #cv2.waitKey(1)
+                    # cv2.imshow( "Frame", image )
+                    #cv2.waitKey(1)
 
                 # Clear the stream in preparation for the next frame
                 rawCapture.truncate(0)

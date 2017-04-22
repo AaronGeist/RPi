@@ -4,21 +4,61 @@
 
 <script language="Javascript">
 
+    var face_detect = false;
+    function trigger_face_detect() {
+        if (face_detect) {
+            $("#face_detect").attr("src", "{{ url_for('static', filename='circle_select.png')}}");
+        } else {
+            $("#face_detect").attr("src", "{{ url_for('static', filename='circle_unselect.png')}}");
+        }
+    }
+
     $(document).ready(function() {
-	$("#left").click(function() {
-		$.ajax({
-                	type: "POST",
-	                url: "/monitor/camera/left/",
-                	async: true 
-                })
-            });
-	$("#right").click(function() {
-		$.ajax({
+        $.ajax({
+                type: "GET",
+                url: "/monitor/camera/face/",
+                async: false,
+                success: function(data) {
+                        console.log("load " + data)
+                        if (data == "True") {
+                            face_detect = true;
+                        } else {
+                            face_detect = false;
+                        }
+                        console.log("load face_detect " + face_detect)
+                        trigger_face_detect();
+                }
+        });
+
+    	$("#left").click(function() {
+    		$.ajax({
+                    	type: "POST",
+    	                url: "/monitor/camera/servo/",
+                        data: {"direction": "left"},
+                    	async: true 
+            })
+        });
+
+    	$("#right").click(function() {
+    		$.ajax({
+                    type: "POST",
+                    url: "/monitor/camera/servo/",
+                    data: {"direction": "right"},
+                    async: true 
+            })
+    	});
+
+        $("#face_detect").click(function() {
+            face_detect = !face_detect;
+            console.log("set " + face_detect)
+            $.ajax({
                 type: "POST",
-                url: "/monitor/camera/right/",
-                async: true 
-                })
-	});
+                url: "/monitor/camera/face/set/",
+                data: {"enable": face_detect},
+                async: false
+            });
+            trigger_face_detect();
+        });
     });
 
 </script>
@@ -27,7 +67,14 @@
 {{ super() }}
 {% endblock %}
 {% block body %}
-    <h1>Video Streaming Demonstration</h1>
-    <img src="{{ url_for('camera') }}">
-    <input type="button" value="<-" id="left"/> <input type="button" value="->" id="right"/>
+    <div>
+        <img src="{{ url_for('camera') }}">
+    </div>
+
+    <div>
+        <img src="{{ url_for('static', filename='arrow_left.png') }}" id="left"/>&nbsp;&nbsp;<img src="{{ url_for('static', filename='arrow_right.png') }}" id="right"/>
+    </div>
+    <div>
+        enable/disable face detect <img src="{{ url_for('static', filename='circle_unselect.png')}}" id="face_detect" />
+    </div>
 {% endblock %}

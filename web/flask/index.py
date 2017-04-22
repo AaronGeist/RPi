@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, Response
+from flask import Flask, render_template, jsonify, Response, request
 from features.Monitor import CpuTemperature, Memory
 from features.Camera import Camera
 from features.Servo import Servo
@@ -36,25 +36,39 @@ def monitor_memory_usage_single():
 
 def gen(camera):
     while True:
+        #print("take snapshot")
         frame = camera.snapshot()
 	yield (b'--frame\r\n'
             b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         # sleep to make sure frame generation speed could match the show speed
-        time.sleep(0.1)
+        time.sleep(0.05)
 
 @app.route('/monitor/camera/', methods=['GET', 'POST'])
 def monitor_camera():
     return render_template('monitor/camera.html')
 
-@app.route('/monitor/camera/left/', methods=['GET', 'POST'])
-def monitor_camera_left():
-    Servo.left()
+@app.route('/monitor/camera/servo/', methods=['POST'])
+def monitor_camera_servo():
+    direction = request.form['direction']
+    if direction == "left":
+        Servo.left()
+    elif direction == "right":
+        Servo.right()
     return ""
 
-@app.route('/monitor/camera/right/', methods=['GET', 'POST'])
-def monitor_camera_right():
-    Servo.right()
+@app.route('/monitor/camera/face/', methods=['GET'])
+def monitor_camera_face():
+    return str(Camera.is_enable_face_detect())
+
+@app.route('/monitor/camera/face/set/', methods=['POST'])
+def monitor_camera_face_set():
+    enable = request.form['enable']
+    if enable == "true":
+        Camera.enable_face_detect()
+    else:
+        Camera.disable_face_detect()
     return ""
+
 
 @app.route('/camera/', methods=['GET', 'POST'])
 def camera():
