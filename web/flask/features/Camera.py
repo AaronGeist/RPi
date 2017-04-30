@@ -40,6 +40,20 @@ class Camera:
     def is_enable_face_detect():
         return Database().get("face_detect") == "1"
 
+    @staticmethod
+    def setBrightness(delta):
+        value = int(Camera.getBrightness()) + int(delta)
+        value = min(100, max(0, value))
+        Database().set("brightness", value)
+
+    @staticmethod
+    def getBrightness():
+        value = Database().get("brightness")
+        if value is None:
+            value = 60
+            Database().set("brightness", value)
+        return value
+
     def snapshot(self):
         Camera.last_access = time.time()
         self.initialize()
@@ -49,8 +63,11 @@ class Camera:
     def _thread(cls):
         with PiCamera() as camera:
             # camera setup
-            camera.resolution = (320, 240)
+            camera.resolution = (640, 480)
             camera.framerate = 60
+            camera.awb_mode = "auto"
+            camera.hflip = True
+            camera.vflip = True
 
             # Load a cascade file for detecting faces
             dir = os.path.dirname(__file__)
@@ -59,7 +76,7 @@ class Camera:
                 print("Cannot find cv2 xml " + path)
             face_cascade = cv2.CascadeClassifier(path)
 
-            rawCapture = PiRGBArray(camera, size=(320, 240))
+            rawCapture = PiRGBArray(camera, size=(640, 480))
 
             # let camera warm up
             camera.start_preview()
@@ -75,7 +92,7 @@ class Camera:
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                     faces = face_cascade.detectMultiScale(gray)
 
-                    print("Found " + str(len(faces)) + " face(s) " + str(threading.currentThread().ident))
+                    #print("Found " + str(len(faces)) + " face(s)")
 
                     # Draw a rectangle around every face and move the motor towards the face
                     for (x, y, w, h) in faces:
@@ -93,6 +110,8 @@ class Camera:
 
                 # store frame
                 cls.frame = encodedImage.tostring()
+
+                camera.brightness = int(Camera.getBrightness())
 
                 # if there hasn't been any clients asking for frames in
                 # the last 10 seconds stop the thread

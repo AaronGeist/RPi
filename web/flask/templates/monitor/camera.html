@@ -13,20 +13,36 @@
         }
     }
 
+    function showBrightness(delta) {
+        value = $("#brightness").html();
+        if (value == "") {
+            value = 0;
+        }
+        $("#brightness").html(parseInt(value) + parseInt(delta));
+    }
+
     $(document).ready(function() {
         $.ajax({
                 type: "GET",
                 url: "/monitor/camera/face/",
                 async: false,
                 success: function(data) {
-                        console.log("load " + data)
                         if (data == "True") {
                             face_detect = true;
                         } else {
                             face_detect = false;
                         }
-                        console.log("load face_detect " + face_detect)
                         trigger_face_detect();
+                }
+        });
+
+        $.ajax({
+                type: "GET",
+                url: "/monitor/camera/brightness/get/",
+                async: false,
+                success: function(data) {
+                        console.log("get brightness " + data);
+                        showBrightness(data);
                 }
         });
 
@@ -48,9 +64,28 @@
             })
     	});
 
+    	$("#incBrightness").click(function() {
+    		$.ajax({
+                    type: "POST",
+                    url: "/monitor/camera/brightness/set/",
+                    data: {"delta": 5},
+                    async: true 
+            })
+            showBrightness(5);
+    	});
+
+    	$("#desBrightness").click(function() {
+    		$.ajax({
+                    type: "POST",
+                    url: "/monitor/camera/brightness/set/",
+                    data: {"delta": -5},
+                    async: true 
+            })
+            showBrightness(-5);
+    	});
+
         $("#face_detect").click(function() {
             face_detect = !face_detect;
-            console.log("set " + face_detect)
             $.ajax({
                 type: "POST",
                 url: "/monitor/camera/face/set/",
@@ -70,11 +105,13 @@
     <div>
         <img src="{{ url_for('camera') }}">
     </div>
-
     <div>
-        <img src="{{ url_for('static', filename='arrow_left.png') }}" id="left"/>&nbsp;&nbsp;<img src="{{ url_for('static', filename='arrow_right.png') }}" id="right"/>
+            <span>Position</span>&nbsp;<img src="{{ url_for('static', filename='arrow_left.png') }}" id="left"/>&nbsp;&nbsp;<img src="{{ url_for('static', filename='arrow_right.png') }}" id="right"/>
     </div>
     <div>
-        enable/disable face detect <img src="{{ url_for('static', filename='circle_unselect.png')}}" id="face_detect" />
+            <span>Brightness</span>&nbsp;<img src="{{ url_for('static', filename='arrow_left.png') }}" id="desBrightness"/>&nbsp;<span id="brightness"></span>&nbsp;<img src="{{ url_for('static', filename='arrow_right.png') }}" id="incBrightness"/>
+    </div>
+    <div>
+        Enable/disable face detect <img src="{{ url_for('static', filename='circle_unselect.png')}}" id="face_detect" />
     </div>
 {% endblock %}

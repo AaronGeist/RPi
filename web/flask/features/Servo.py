@@ -58,11 +58,11 @@ class Servo:
 
     @staticmethod
     def left():
-        Servo.control(hDelta=-0.5)
+        Servo.control(hDelta=-0.25)
 
     @staticmethod
     def right():
-        Servo.control(hDelta=0.5)
+        Servo.control(hDelta=0.25)
 
     @staticmethod
     def up():

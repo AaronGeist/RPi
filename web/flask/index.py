@@ -69,6 +69,15 @@ def monitor_camera_face_set():
         Camera.disable_face_detect()
     return ""
 
+@app.route('/monitor/camera/brightness/get/', methods=['GET'])
+def monitor_camera_brightness_get():
+    return str(Camera.getBrightness())
+
+@app.route('/monitor/camera/brightness/set/', methods=['POST'])
+def monitor_camera_brightness_set():
+    delta = request.form['delta']
+    Camera.setBrightness(delta)
+    return ""
 
 @app.route('/camera/', methods=['GET', 'POST'])
 def camera():
