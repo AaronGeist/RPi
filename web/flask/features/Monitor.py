@@ -67,7 +67,7 @@ class BaseMonitor(object):
         data = list()
         title = list()
         for single in self.db.getByRange(self.bucketName, start=0, end=self.LIMIT):
-            item = single.split(self.DELIMITER)
+            item = single.decode("UTF-8").split(self.DELIMITER)
             title.append(item[0])
             data.append(float(item[1]))
         data.reverse()
@@ -79,7 +79,7 @@ class BaseMonitor(object):
     def latest(self):
         res = dict()
         for single in self.db.getByRange(self.bucketName, start=0, end=0):
-            item = single.split(self.DELIMITER)
+            item = single.decode("UTF-8").split(self.DELIMITER)
             res['title'] = item[0]
             res['data'] = float(item[1])
             break
@@ -108,7 +108,7 @@ class CpuTemperature(BaseMonitor):
 
 class Memory(BaseMonitor):
     MEMORY_BUCKET = "memory"
-    CMD = "free -m | grep buffers/cache | awk '{print $3}'"
+    CMD = "free -m | grep Mem | awk '{print $7}'"
 
     def __init__(self):
         super(Memory, self).__init__(self.MEMORY_BUCKET, self.CMD)
